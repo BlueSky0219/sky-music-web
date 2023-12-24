@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <el-container>
-      <el-header style="height: 100%">没想好放什么</el-header>
+      <el-header style="height: 100%">LOGO</el-header>
     </el-container>
   </div>
 </template>
@@ -26,7 +26,7 @@ export default {
   height: 75px;
   margin: 0 auto;
   //background-color: red;
-  background-color: #B3C0D1;
+  background-color: lightskyblue;
   color: #333;
   text-align: center;
   line-height: 75px;

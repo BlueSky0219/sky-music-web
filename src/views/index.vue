@@ -1,8 +1,8 @@
-<template>
+  <template>
   <div class="index">
     <web-header></web-header>
     <web-songs-list></web-songs-list>
-    <web-audio-player></web-audio-player>
+<!--    <web-audio-player></web-audio-player>-->
   </div>
 </template>
 

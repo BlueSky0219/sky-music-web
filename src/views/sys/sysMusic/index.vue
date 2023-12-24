@@ -6,25 +6,25 @@
       <el-form :model="form" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="歌曲名称" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30"/>
+            <el-form-item label="歌曲名称" prop="songName">
+              <el-input v-model="form.songName" placeholder="请输入歌曲名称" maxlength="30"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="歌曲出处" prop="deptId">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30"/>
+            <el-form-item label="歌曲出处" prop="songSource">
+              <el-input v-model="form.songSource" placeholder="请输入歌曲出处" maxlength="30"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="歌手姓名" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30"/>
+            <el-form-item label="歌手姓名" prop="singerId">
+              <el-input v-model="form.singerId" placeholder="请输入歌手姓名" maxlength="30"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="专辑" prop="deptId">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" maxlength="30"/>
+            <el-form-item label="专辑名称" prop="albumId">
+              <el-input v-model="form.albumId" placeholder="请输入专辑名称" maxlength="30"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -47,46 +47,28 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="uploadSong()">确 定</el-button>
       </div>
     </el-dialog>
+
     <div>
       <el-table
           :data="tableData"
-          style="width: 100%">
+          style="width: 100%"
+          height="700px">
         <el-table-column
-            label="日期"
+            type="index"
+            label="#"
             width="180">
-          <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ scope.row.date }}</span>
-          </template>
         </el-table-column>
         <el-table-column
-            label="姓名"
+            prop="songName"
+            label="歌曲名称"
             width="180">
-          <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
-              <p>姓名: {{ scope.row.name }}</p>
-              <p>住址: {{ scope.row.address }}</p>
-              <div slot="reference" class="name-wrapper">
-                <el-tag size="medium">{{ scope.row.name }}</el-tag>
-              </div>
-            </el-popover>
-          </template>
         </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)">编辑
-            </el-button>
-            <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除
-            </el-button>
-          </template>
+        <el-table-column
+            prop="songSource"
+            label="歌曲出处">
         </el-table-column>
       </el-table>
     </div>
@@ -95,36 +77,21 @@
 
 <script>
 import Index from "@/views/index.vue";
+import axios from "axios";
 
 export default {
   name: "SysMusic",
   components: {Index},
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
-      dialogFormVisible: true,
+      tableData: [],
+      dialogFormVisible: false,
       form: {
         songName: '',
-        songSource: '',
-        singerName: '',
-        albumName: '',
-        url:''
+        songSource: '周杰伦',
+        songUrl: '',
+        singerId: '1',
+        albumId: '1'
       },
       fileList: [],
       url: "http://localhost:8080/common/upload",
@@ -133,6 +100,33 @@ export default {
   },
   computed: {},
   methods: {
+    uploadSong() {
+      this.dialogFormVisible = false
+      axios({
+        url: "/sys/song",
+        method: "post",
+        data: this.form,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }).then((res) => {
+        // this.querySong()
+        location.reload()
+
+      })
+    },
+    querySong() {
+      axios({
+        url: "/web/song",
+        method: "get",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }).then((res) => {
+        this.tableData = res.data.data.list
+        console.log(res)
+      })
+    },
     openDialog() {
       this.dialogFormVisible = true;
     },
@@ -149,12 +143,11 @@ export default {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     success(response, file, fileList) {
-
-      console.log(response)
+      this.form.songUrl = response.url
     },
   },
-  mounted() {
-
+  beforeMount() {
+    this.querySong()
   },
 }
 </script>
