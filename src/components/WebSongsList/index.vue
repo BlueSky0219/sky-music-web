@@ -2,7 +2,8 @@
   <div class="index">
     <el-table
         :data="tableData"
-        style="width: 100%">
+        style="width: 100%"
+        height="700px">
       <el-table-column
           prop="date"
           label="日期"
@@ -26,7 +27,7 @@ export default {
   name: "WebSongsList",
   data() {
     return {
-      tableData:[],
+      tableData: [],
     }
   },
   computed: {},
@@ -39,6 +40,6 @@ export default {
 
 <style scoped lang="less">
 .index {
-
+  background-color: skyblue;
 }
 </style>
